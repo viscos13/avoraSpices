@@ -2,7 +2,6 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
-import { useScroll } from 'framer-motion';
 import { ArrowUpRight, ArrowRight } from 'lucide-react';
 import { HeroTrioStage3D } from '@/components/canvas/HeroTrioStage3D';
 import { SectionSpiceStage3D } from '@/components/canvas/SectionSpiceStage3D';
@@ -25,7 +24,7 @@ function SyncedSpiceSection({
   accentColor = '#0B3B2E',
 }: {
   spiceType: 'cardamom' | 'pepper' | 'clove';
-  direction: 'left-to-center' | 'right-to-center';
+  direction: 'left-to-center' | 'right-to-left';
   badge: string;
   title: string;
   botanical: string;
@@ -37,19 +36,6 @@ function SyncedSpiceSection({
   accentColor?: string;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-
-  const [progress, setProgress] = React.useState(0);
-
-  React.useEffect(() => {
-    return scrollYProgress.on('change', (latest) => {
-      setProgress(latest);
-    });
-  }, [scrollYProgress]);
-
   const isLeft = direction === 'left-to-center';
   const spiceNoun =
     spiceType === 'cardamom'
@@ -70,9 +56,8 @@ function SyncedSpiceSection({
             }`}
         >
           <SectionSpiceStage3D
-            spiceType={spiceType}
+            spice={spiceType}
             direction={direction}
-            scrollProgress={progress}
           />
         </div>
 
@@ -265,7 +250,7 @@ export default function HomePage() {
       {/* ======================================================== */}
       <SyncedSpiceSection
         spiceType="pepper"
-        direction="right-to-center"
+        direction="right-to-left"
         badge="The King of Spices • Tellicherry TGSEB"
         title="Black Pepper"
         botanical={`${SPICES.pepper.botanicalName} • ${SPICES.pepper.origin}`}

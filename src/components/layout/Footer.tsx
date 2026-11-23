@@ -151,7 +151,7 @@ export function Footer() {
                 <span>{COMPANY_INFO.contact.email}</span>
               </a>
 
-              <div className="mt-2 p-3.5 rounded-xl bg-white/5 border border-white/5 font-sans text-xs text-[#FAF8F5]/75">
+              <div className="mt-3 font-sans text-xs text-[#FAF8F5]/75">
                 <div className="text-[#E5A024] font-semibold mb-1 uppercase tracking-wider text-[10px]">
                   Export Desk Operating Hours
                 </div>

@@ -35,7 +35,7 @@ export function QuickConnectPill() {
         href={COMPANY_INFO.contact.whatsAppUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="WhatsApp us only (+91 70266 47347)"
+        aria-label="WhatsApp Trade Desk (+91 70266 47347)"
         className="flex items-center gap-2.5 px-4 sm:px-5 py-3 rounded-full bg-[#25D366] hover:bg-[#20ba5a] active:scale-95 text-white font-sans text-xs font-bold tracking-wide shadow-lg shadow-[#25D366]/35 hover:shadow-xl hover:shadow-[#25D366]/45 transition-all duration-300 group"
       >
         <span className="relative flex h-2 w-2">
@@ -43,7 +43,7 @@ export function QuickConnectPill() {
           <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
         </span>
         <WhatsAppIcon className="w-4 h-4 fill-white flex-shrink-0" />
-        <span className="font-semibold whitespace-nowrap">WhatsApp us only</span>
+        <span className="font-semibold whitespace-nowrap">WhatsApp Trade Desk</span>
       </a>
     </aside>
   );

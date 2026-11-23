@@ -158,7 +158,7 @@ function ProductsContent() {
                     transition={{ duration: 0.2 }}
                     className="w-full h-full"
                   >
-                    <ProductsPedestal3D spiceType={activeSpiceId} />
+                    <ProductsPedestal3D spice={activeSpiceId} />
                   </motion.div>
                 ) : (
                   <motion.div

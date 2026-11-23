@@ -1,146 +1,120 @@
 'use client';
 
-import React, { Suspense, useRef, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
-import { GoldAstrolabe } from './GoldAstrolabe';
-import { InteractiveAromaParticles } from './InteractiveAromaParticles';
-import { VolumetricSpiceConstellation } from './VolumetricSpiceConstellation';
-import { CanvasErrorBoundary } from './ErrorBoundary';
+import VolumetricSpiceConstellation, {
+  SPICE_TEXTURES,
+  SpiceKey,
+} from './VolumetricSpiceConstellation';
+import InteractiveAromaParticles from './InteractiveAromaParticles';
+import ErrorBoundary from './ErrorBoundary';
 
 interface SectionSpiceStage3DProps {
-  spiceType: 'cardamom' | 'pepper' | 'clove';
-  direction?: 'left-to-center' | 'right-to-center';
-  scrollProgress: number; // 0.0 to 1.0 within dedicated section
+  spice?: SpiceKey;
+  spiceId?: SpiceKey;
+  direction?: 'left-to-center' | 'right-to-left' | 'left' | 'right';
 }
 
-function SectionScene({
-  spiceType,
-  scrollProgress,
+function ScrollChoreographedSpice({
+  spice,
+  enterFrom,
+  containerRef,
 }: {
-  spiceType: 'cardamom' | 'pepper' | 'clove';
-  scrollProgress: number;
+  spice: SpiceKey;
+  enterFrom: 'left' | 'right';
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const masterGroupRef = useRef<THREE.Group>(null);
-  const astrolabeGroupRef = useRef<THREE.Group>(null);
+  const rigRef = useRef<THREE.Group>(null);
+  const spreadRef = useRef<number>(1.35);
 
-  const particleColorMap = {
-    cardamom: '#0B3B2E',
-    pepper: '#C97E12',
-    clove: '#8F3518',
-  };
+  useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.05);
+    const rig = rigRef.current;
+    const el = containerRef.current;
+    if (!rig || !el) return;
 
-  useFrame((_, delta) => {
-    if (!masterGroupRef.current) return;
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    const rawProgress = (vh - rect.top) / (vh + rect.height);
+    const p = THREE.MathUtils.clamp(rawProgress, 0, 1);
 
-    // Damped interpolation of scroll progress (0 to 1)
-    const t = Math.max(0, Math.min(1, scrollProgress));
-    const smoothT = Math.sin(t * Math.PI); // peak around 0.5 (in view)
+    const entryEase = THREE.MathUtils.smoothstep(p, 0.05, 0.44);
+    const exitEase = THREE.MathUtils.smoothstep(p, 0.78, 1.0);
 
-    // Strict Zoom Cap: 0.82 to 1.04 (NEVER blows up)
-    const targetScale = THREE.MathUtils.lerp(0.82, 1.04, smoothT);
+    const startX = enterFrom === 'left' ? -2.4 : 2.4;
+    const exitX = enterFrom === 'left' ? 0.55 : -0.55;
 
-    // Directional translation based on spice identity
-    let targetX = 0;
-    let targetY = 0;
-    let targetRotY = 0;
-    let targetRotZ = 0;
+    const targetX =
+      THREE.MathUtils.lerp(startX, 0, entryEase) +
+      THREE.MathUtils.lerp(0, exitX, exitEase);
 
-    if (spiceType === 'cardamom') {
-      targetX = THREE.MathUtils.lerp(-1.4, 0.0, smoothT);
-      targetY = THREE.MathUtils.lerp(-0.15, 0.0, smoothT);
-      targetRotY = THREE.MathUtils.lerp(-0.5, 0.2, t);
-    } else if (spiceType === 'pepper') {
-      targetX = THREE.MathUtils.lerp(1.4, 0.0, smoothT);
-      targetY = THREE.MathUtils.lerp(0.2, 0.0, smoothT);
-      targetRotZ = THREE.MathUtils.lerp(0.6, -0.2, t);
-      targetRotY = THREE.MathUtils.lerp(0.4, -0.3, t);
-    } else {
-      targetX = THREE.MathUtils.lerp(-1.2, 0.0, smoothT);
-      targetY = THREE.MathUtils.lerp(-1.0, 0.0, smoothT);
-      targetRotY = THREE.MathUtils.lerp(-0.3, 0.3, t);
-    }
+    const targetY = (0.5 - p) * 0.45;
+    const targetScale =
+      THREE.MathUtils.lerp(0.68, 1.04, entryEase) *
+      THREE.MathUtils.lerp(1, 0.9, exitEase);
 
-    masterGroupRef.current.position.x = THREE.MathUtils.lerp(
-      masterGroupRef.current.position.x,
-      targetX,
-      delta * 4.0
+    const targetSpread = THREE.MathUtils.lerp(1.55, 1.0, entryEase);
+    spreadRef.current = THREE.MathUtils.lerp(spreadRef.current, targetSpread, dt * 4);
+
+    rig.position.x = THREE.MathUtils.lerp(rig.position.x, targetX, dt * 4.5);
+    rig.position.y = THREE.MathUtils.lerp(rig.position.y, targetY, dt * 4.5);
+    const nextScale = THREE.MathUtils.lerp(rig.scale.x, targetScale, dt * 4.5);
+    rig.scale.set(nextScale, nextScale, nextScale);
+
+    state.camera.position.x = THREE.MathUtils.lerp(
+      state.camera.position.x,
+      state.pointer.x * 0.35,
+      dt * 2.5
     );
-    masterGroupRef.current.position.y = THREE.MathUtils.lerp(
-      masterGroupRef.current.position.y,
-      targetY,
-      delta * 4.0
+    state.camera.position.y = THREE.MathUtils.lerp(
+      state.camera.position.y,
+      state.pointer.y * 0.25,
+      dt * 2.5
     );
-    masterGroupRef.current.scale.lerp(
-      new THREE.Vector3(targetScale, targetScale, targetScale),
-      delta * 4.0
-    );
-    masterGroupRef.current.rotation.y = THREE.MathUtils.lerp(
-      masterGroupRef.current.rotation.y,
-      targetRotY,
-      delta * 3.5
-    );
-    masterGroupRef.current.rotation.z = THREE.MathUtils.lerp(
-      masterGroupRef.current.rotation.z,
-      targetRotZ,
-      delta * 3.5
-    );
-
-    if (astrolabeGroupRef.current) {
-      astrolabeGroupRef.current.rotation.y += delta * 0.18;
-    }
+    state.camera.lookAt(0, 0, 0);
   });
 
+  const spiceCfg = SPICE_TEXTURES[spice] ?? SPICE_TEXTURES.cardamom;
+
   return (
-    <group ref={masterGroupRef}>
-      {/* Volumetric Spice Constellation */}
-      <VolumetricSpiceConstellation spiceType={spiceType} scale={1.0} />
-
-      {/* 3D Brushed Gold Astrolabe Gyroscope Rings */}
-      <group ref={astrolabeGroupRef}>
-        <GoldAstrolabe radius={2.2} speed={0.85} showGlassOrbs={true} />
-      </group>
-
-      {/* Lightweight Ambient Aroma Sparkles (max 45 particles) */}
-      <InteractiveAromaParticles
-        count={45}
-        color={particleColorMap[spiceType]}
-        spread={4.8}
+    <group ref={rigRef} scale={[0.75, 0.75, 0.75]}>
+      <VolumetricSpiceConstellation
+        heroScale={2.65}
+        satelliteCount={9}
+        showFloorShadow={true}
+        spice={spice}
+        spreadFactor={spreadRef}
       />
-
-      {/* Ground Contact Shadow */}
-      <ContactShadows
-        position={[0, -2.0, 0]}
-        opacity={0.28}
-        scale={5.2}
-        blur={2.4}
-        far={3.8}
-        color="#082920"
+      <InteractiveAromaParticles
+        color={spiceCfg.particleColor}
+        count={42}
+        radius={2.7}
+        speed={0.24}
       />
     </group>
   );
 }
 
-export function SectionSpiceStage3D({
-  spiceType,
+export default function SectionSpiceStage3D({
+  spice,
+  spiceId,
   direction = 'left-to-center',
-  scrollProgress,
 }: SectionSpiceStage3DProps) {
+  const activeSpice: SpiceKey = spice ?? spiceId ?? 'cardamom';
+  const enterFrom: 'left' | 'right' =
+    direction === 'right-to-left' || direction === 'right' ? 'right' : 'left';
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-
+    if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.05 }
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: '200px' }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -148,39 +122,34 @@ export function SectionSpiceStage3D({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[280px] sm:h-[440px] flex items-center justify-center select-none pointer-events-auto"
+      className="relative w-full h-[420px] sm:h-[490px] lg:h-[540px] select-none"
       style={{ touchAction: 'pan-y' }}
     >
-      {/* Soft warm ambient background glow */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#0B3B2E]/6 via-[#C97E12]/5 to-transparent rounded-full blur-3xl opacity-70 pointer-events-none" />
-
-      <CanvasErrorBoundary>
+      <ErrorBoundary>
         <Canvas
-          frameloop={isInView ? 'always' : 'never'}
-          camera={{ position: [0, 0, 5.8], fov: 45 }}
+          frameloop={inView ? 'always' : 'never'}
           dpr={[1, 1.5]}
+          camera={{ position: [0, 0.1, 6.2], fov: 40 }}
           gl={{
-            antialias: true,
             alpha: true,
+            antialias: true,
             powerPreference: 'high-performance',
             toneMapping: THREE.NoToneMapping,
             outputColorSpace: THREE.SRGBColorSpace,
           }}
-          style={{ touchAction: 'pan-y' }}
         >
-          {/* Studio Balanced Daylight Lighting (Neutral to preserve authentic spice photography) */}
-          <ambientLight intensity={1.25} color="#FFFFFF" />
-          <directionalLight position={[4, 6, 4]} intensity={2.0} color="#FFFFFF" />
-          <directionalLight position={[-4, 3, -3]} intensity={1.0} color="#FAF8F5" />
-
           <Suspense fallback={null}>
-            <SectionScene
-              spiceType={spiceType}
-              scrollProgress={scrollProgress}
+            <ScrollChoreographedSpice
+              containerRef={containerRef}
+              enterFrom={enterFrom}
+              spice={activeSpice}
             />
           </Suspense>
         </Canvas>
-      </CanvasErrorBoundary>
+      </ErrorBoundary>
     </div>
   );
 }
+
+export { SectionSpiceStage3D };
+

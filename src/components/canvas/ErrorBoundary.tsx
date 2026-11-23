@@ -37,3 +37,6 @@ export class CanvasErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export const ErrorBoundary = CanvasErrorBoundary;
+export default CanvasErrorBoundary;

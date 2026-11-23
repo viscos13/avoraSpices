@@ -1,111 +1,111 @@
 'use client';
 
-import React, { Suspense, useRef, useMemo, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
-import { VolumetricSpiceConstellation } from './VolumetricSpiceConstellation';
-import { GoldAstrolabe } from './GoldAstrolabe';
-import { InteractiveAromaParticles } from './InteractiveAromaParticles';
-import { CanvasErrorBoundary } from './ErrorBoundary';
+import VolumetricSpiceConstellation, {
+  SPICE_TEXTURES,
+  SpiceKey,
+} from './VolumetricSpiceConstellation';
+import InteractiveAromaParticles from './InteractiveAromaParticles';
+import ErrorBoundary from './ErrorBoundary';
 
 interface ProductsPedestal3DProps {
-  spiceType: 'cardamom' | 'pepper' | 'clove';
+  spice?: SpiceKey;
+  activeSpice?: SpiceKey;
 }
 
-function PedestalScene({ spiceType }: { spiceType: 'cardamom' | 'pepper' | 'clove' }) {
+function PedestalScene({ spice }: { spice: SpiceKey }) {
+  const stageRef = useRef<THREE.Group>(null);
   const plinthRef = useRef<THREE.Group>(null);
-  const spiceRotRef = useRef<THREE.Group>(null);
+  const spreadRef = useRef<number>(1.05);
 
-  // Architectural Travertine / Brushed Gold Plinth Materials
-  const travertineMat = useMemo(() => {
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#F0EAE1'),
-      roughness: 0.65,
-      metalness: 0.08,
-    });
-  }, []);
-
-  const goldRimMat = useMemo(() => {
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#D1A748'),
-      metalness: 0.92,
-      roughness: 0.22,
-    });
-  }, []);
+  useEffect(() => {
+    if (stageRef.current) {
+      stageRef.current.scale.set(0.72, 0.72, 0.72);
+    }
+    spreadRef.current = 1.45;
+  }, [spice]);
 
   useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.05);
+
+    if (stageRef.current) {
+      const s = THREE.MathUtils.lerp(stageRef.current.scale.x, 1, dt * 5);
+      stageRef.current.scale.set(s, s, s);
+    }
+    spreadRef.current = THREE.MathUtils.lerp(spreadRef.current, 1.0, dt * 3.5);
+
     if (plinthRef.current) {
-      plinthRef.current.rotation.y += delta * 0.12;
+      plinthRef.current.rotation.y += dt * 0.18;
     }
-    if (spiceRotRef.current) {
-      spiceRotRef.current.rotation.y += delta * 0.16;
-      // Gentle vertical hover
-      spiceRotRef.current.position.y = 0.35 + Math.sin(state.clock.elapsedTime * 1.1) * 0.05;
-    }
+
+    state.camera.position.x = THREE.MathUtils.lerp(
+      state.camera.position.x,
+      state.pointer.x * 0.5,
+      dt * 2.5
+    );
+    state.camera.position.y = THREE.MathUtils.lerp(
+      state.camera.position.y,
+      0.25 + state.pointer.y * 0.3,
+      dt * 2.5
+    );
+    state.camera.lookAt(0, -0.1, 0);
   });
 
+  const spiceCfg = SPICE_TEXTURES[spice] ?? SPICE_TEXTURES.cardamom;
+
   return (
-    <group position={[0, -0.2, 0]}>
-      {/* Floating Volumetric Photorealistic Spice Cluster in 3D */}
-      <group ref={spiceRotRef} position={[0, 0.35, 0]}>
-        <VolumetricSpiceConstellation spiceType={spiceType} scale={1.05} />
-      </group>
+    <>
+      <ambientLight intensity={1.3} />
+      <directionalLight position={[4, 6, 5]} intensity={1.4} color="#FFF8EB" />
+      <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#E6C687" />
 
-      {/* Orbiting Brushed Gold Astrolabe Gyroscope */}
-      <group position={[0, 0.35, 0]}>
-        <GoldAstrolabe radius={2.3} speed={0.8} showGlassOrbs={true} />
-      </group>
-
-      {/* Rotating Architectural Travertine Plinth Base */}
-      <group ref={plinthRef} position={[0, -1.8, 0]}>
-        {/* Upper Plinth Disc */}
-        <mesh geometry={new THREE.CylinderGeometry(1.6, 1.7, 0.18, 36)} material={travertineMat} />
-        {/* Gold Inlaid Accent Ring */}
-        <mesh
-          geometry={new THREE.CylinderGeometry(1.71, 1.71, 0.04, 36)}
-          material={goldRimMat}
-          position={[0, 0.08, 0]}
+      <group ref={stageRef} position={[0, 0.25, 0]}>
+        <VolumetricSpiceConstellation
+          heroScale={2.55}
+          satelliteCount={10}
+          showFloorShadow={true}
+          spice={spice}
+          spreadFactor={spreadRef}
         />
-        {/* Lower Stepped Foundation */}
-        <mesh
-          geometry={new THREE.CylinderGeometry(1.9, 2.0, 0.25, 36)}
-          material={travertineMat}
-          position={[0, -0.22, 0]}
+        <InteractiveAromaParticles
+          color={spiceCfg.particleColor}
+          count={45}
+          radius={2.6}
+          speed={0.25}
         />
       </group>
 
-      {/* Lightweight Shimmering Aroma Particle Cloud */}
-      <InteractiveAromaParticles count={45} color="#E5A024" spread={4.8} />
-
-      {/* Ground Contact Shadow */}
-      <ContactShadows
-        position={[0, -2.1, 0]}
-        opacity={0.3}
-        scale={5.5}
-        blur={2.2}
-        far={3.8}
-        color="#082920"
-      />
-    </group>
+      <group ref={plinthRef} position={[0, -1.92, 0]}>
+        <mesh>
+          <cylinderGeometry args={[1.65, 1.78, 0.22, 64]} />
+          <meshStandardMaterial color="#EFE8DC" roughness={0.65} metalness={0.05} />
+        </mesh>
+        <mesh position={[0, 0.115, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.64, 0.018, 16, 80]} />
+          <meshStandardMaterial color="#C89B3C" roughness={0.25} metalness={0.85} />
+        </mesh>
+      </group>
+    </>
   );
 }
 
-export function ProductsPedestal3D({ spiceType }: ProductsPedestal3DProps) {
+export default function ProductsPedestal3D({
+  spice,
+  activeSpice,
+}: ProductsPedestal3DProps) {
+  const currentSpice: SpiceKey = spice ?? activeSpice ?? 'cardamom';
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(true);
+  const [inView, setInView] = useState(true);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-
+    if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.05 }
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: '150px' }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -113,33 +113,30 @@ export function ProductsPedestal3D({ spiceType }: ProductsPedestal3DProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full min-h-[300px] sm:min-h-[440px] lg:min-h-[520px] flex items-center justify-center select-none pointer-events-auto"
+      className="relative w-full h-[440px] sm:h-[520px] select-none"
       style={{ touchAction: 'pan-y' }}
     >
-      <CanvasErrorBoundary>
+      <ErrorBoundary>
         <Canvas
-          frameloop={isInView ? 'always' : 'never'}
-          camera={{ position: [0, 0.5, 5.8], fov: 46 }}
+          frameloop={inView ? 'always' : 'never'}
           dpr={[1, 1.5]}
+          camera={{ position: [0, 0.25, 6.4], fov: 38 }}
           gl={{
-            antialias: true,
             alpha: true,
+            antialias: true,
             powerPreference: 'high-performance',
             toneMapping: THREE.NoToneMapping,
             outputColorSpace: THREE.SRGBColorSpace,
           }}
-          style={{ touchAction: 'pan-y' }}
         >
-          {/* Studio Balanced Daylight Lighting (Neutral to preserve authentic spice photography) */}
-          <ambientLight intensity={1.25} color="#FFFFFF" />
-          <directionalLight position={[4, 6, 4]} intensity={2.0} color="#FFFFFF" />
-          <directionalLight position={[-4, 3, -3]} intensity={1.0} color="#FAF8F5" />
-
           <Suspense fallback={null}>
-            <PedestalScene spiceType={spiceType} />
+            <PedestalScene spice={currentSpice} />
           </Suspense>
         </Canvas>
-      </CanvasErrorBoundary>
+      </ErrorBoundary>
     </div>
   );
 }
+
+export { ProductsPedestal3D };
+
