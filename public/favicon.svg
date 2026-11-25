@@ -1,17 +1,6 @@
-<svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#F3E5AB" />
-      <stop offset="50%" stopColor="#D4AF37" />
-      <stop offset="100%" stopColor="#A68019" />
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="#090908" />
-  <circle cx="50" cy="50" r="44" stroke="url(#goldGrad)" strokeWidth="1.5" opacity="0.4" />
-  <g transform="translate(50, 50) rotate(-15) translate(-50, -50)">
-    <path d="M50 16 C34 30 33 62 50 84 C41 68 41 32 50 16 Z" fill="url(#goldGrad)" opacity="0.95" />
-    <path d="M50 16 C66 30 67 62 50 84 C59 68 59 32 50 16 Z" fill="url(#goldGrad)" opacity="0.75" />
-    <path d="M50 14 L50 86" stroke="url(#goldGrad)" strokeWidth="2.5" strokeLinecap="round" />
-  </g>
-  <path d="M50 22 L52.5 38 L68.5 40.5 L52.5 43 L50 59 L47.5 43 L31.5 40.5 L47.5 38 Z" fill="#F5F0E6" />
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="12" fill="#0B1F3A" />
+  <rect x="6" y="6" width="52" height="52" rx="8" stroke="#C59238" stroke-width="1.5" stroke-opacity="0.6" />
+  <path d="M32 14L49 48H41.8L38.2 40H25.8L22.2 48H15L32 14ZM32 23.6L28.1 34H35.9L32 23.6Z" fill="#FFFFFF" />
+  <rect x="27" y="42" width="10" height="2.5" rx="1" fill="#C59238" />
 </svg>

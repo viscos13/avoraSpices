@@ -1,407 +1,441 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
-import { HeroTrioStage3D } from '@/components/canvas/HeroTrioStage3D';
-import { SectionSpiceStage3D } from '@/components/canvas/SectionSpiceStage3D';
-import { SPICES } from '@/data/spices';
-import { COMPANY_INFO } from '@/data/company';
+import Image from 'next/image';
+import { Reveal } from '@/components/ui/Reveal';
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
+import { SPICE_LIST } from '@/data/spices';
+import { VISUAL_ASSETS } from '@/data/assets';
+import { COMPANY_INFO } from '@/data/company';
+import {
+  ArrowRight,
+  MapPin,
+  ShieldCheck,
+  Microscope,
+  PackageCheck,
+  FileCheck2,
+  CheckCircle2,
+} from 'lucide-react';
 
-// Dedicated scroll-synchronized section wrapper (Clean open architectural layout)
-function SyncedSpiceSection({
-  spiceType,
-  direction,
-  badge,
-  title,
-  botanical,
-  description,
-  specs,
-  quoteHref,
-  fullSpecHref,
-  bgColor = 'bg-white',
-  accentColor = '#0B3B2E',
-}: {
-  spiceType: 'cardamom' | 'pepper' | 'clove';
-  direction: 'left-to-center' | 'right-to-left';
-  badge: string;
-  title: string;
-  botanical: string;
-  description: string;
-  specs: { label: string; value: string; highlight?: boolean }[];
-  quoteHref: string;
-  fullSpecHref: string;
-  bgColor?: string;
-  accentColor?: string;
-}) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isLeft = direction === 'left-to-center';
-  const spiceNoun =
-    spiceType === 'cardamom'
-      ? 'Cardamom'
-      : spiceType === 'pepper'
-        ? 'Pepper'
-        : 'Clove';
+const PILLARS = [
+  {
+    icon: MapPin,
+    title: 'Estate-Direct Procurement',
+    description:
+      'Direct grower and auction house sourcing across Idukki, Coorg, Wayanad, and Kanyakumari — removing middle-tier markups and preserving origin traceability.',
+  },
+  {
+    icon: Microscope,
+    title: 'Precision Grading & Purity',
+    description:
+      'Multi-stage mechanical cleaning, optical color sorting, sieve calibration, and strict zero-spent-spice blending across every export lot.',
+  },
+  {
+    icon: PackageCheck,
+    title: 'Pre-Shipment Sample Guarantee',
+    description:
+      'Physical batch evaluation samples dispatched globally via DHL/FedEx prior to commercial bulk commitment so your QA team buys with total certainty.',
+  },
+  {
+    icon: FileCheck2,
+    title: 'Full Export Documentation',
+    description:
+      'Complete shipping documentation including Phytosanitary, Certificate of Origin, Fumigation certificates, and third-party SGS/Intertek pre-shipment inspection.',
+  },
+];
 
-  return (
-    <section
-      ref={sectionRef}
-      className={`relative min-h-auto lg:min-h-[90vh] flex items-center px-5 sm:px-12 lg:px-20 py-16 sm:py-24 overflow-hidden border-b border-[#141210]/8 ${bgColor}`}
-    >
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        {/* 3D Visual Column: Displays above text on mobile for instant visual delight */}
-        <div
-          className={`lg:col-span-6 flex items-center justify-center order-1 ${isLeft ? 'lg:order-1' : 'lg:order-2'
-            }`}
-        >
-          <SectionSpiceStage3D
-            spice={spiceType}
-            direction={direction}
-          />
-        </div>
-
-        {/* Open Editorial Specification Column (No template box) */}
-        <div
-          className={`lg:col-span-6 flex flex-col justify-center order-2 ${
-            isLeft ? 'lg:order-2' : 'lg:order-1'
-          }`}
-        >
-          <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wider uppercase mb-3 border self-start shadow-2xs"
-            style={{
-              backgroundColor: `${accentColor}0D`,
-              borderColor: `${accentColor}25`,
-              color: accentColor,
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
-            <span>{badge}</span>
-          </div>
-
-          <h2 className="font-serif text-3xl sm:text-5xl text-[#141210] font-normal mb-1">
-            {title}
-          </h2>
-          <p className="font-serif italic text-sm sm:text-lg text-[#C97E12] mb-4 sm:mb-5">
-            {botanical}
-          </p>
-
-          <p className="font-sans text-sm sm:text-base text-[#554D45] font-light leading-relaxed mb-6 sm:mb-8">
-            {description}
-          </p>
-
-          {/* Clean Borderless Architectural Ledger */}
-          <div className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8">
-            {specs.map((spec, i) => (
-              <div
-                key={i}
-                className="flex justify-between items-center py-2 sm:py-2.5 border-t border-[#141210]/10 text-xs font-sans"
-              >
-                <span className="text-[#554D45] pr-2">{spec.label}</span>
-                <span
-                  className={`tabular-nums text-right font-medium sm:font-semibold ${spec.highlight
-                    ? 'text-[#C97E12]'
-                    : 'text-[#141210]'
-                    }`}
-                >
-                  {spec.value}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Clean Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 w-full sm:w-auto">
-            <Link
-              href={quoteHref}
-              className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full text-xs font-sans uppercase tracking-wider text-white bg-[#0B3B2E] hover:bg-[#C97E12] transition-colors shadow-sm font-semibold"
-            >
-              <span>{`Request ${spiceNoun} Quote`}</span>
-            </Link>
-            <Link
-              href={fullSpecHref}
-              className="w-full sm:w-auto justify-center text-xs font-sans uppercase tracking-wider text-[#141210] hover:text-[#C97E12] underline underline-offset-4 transition-colors flex items-center gap-1 font-semibold py-2 sm:py-0"
-            >
-              <span>View Full Specifications</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+const WORKFLOW_STEPS = [
+  {
+    step: '01',
+    title: 'Requirement & Grade Alignment',
+    description:
+      'Confirm spice grade, moisture benchmark, packing specification, volume, and destination port under FOB, CIF, or EXW terms.',
+  },
+  {
+    step: '02',
+    title: 'Evaluation Sample & Proforma',
+    description:
+      'Dispatch air-courier physical harvest lot sample alongside a formal commercial proforma quotation within 24 business hours.',
+  },
+  {
+    step: '03',
+    title: 'Batch Grading & Aroma-Lock Packing',
+    description:
+      'Perform sieve calibration, density checks, moisture verification, and vacuum-sealed barrier or palletized export sack packing.',
+  },
+  {
+    step: '04',
+    title: 'Customs Clearance & Container Dispatch',
+    description:
+      'Issue Phytosanitary, CoO, and inspection certificates with scheduled container stuffing and bill-of-lading dispatch from South Indian ports.',
+  },
+];
 
 export default function HomePage() {
   return (
-    <div className="relative w-full bg-[#FFFFFF] text-[#141210]">
+    <div className="bg-white text-[#334155]">
       {/* ======================================================== */}
-      {/* SECTION 1: CLEAN SUNLIT HERO (NO EYEBROW BOX/LINE) */}
+      {/* SECTION 1: COMMANDING NAVY EXECUTIVE HERO */}
       {/* ======================================================== */}
-      <section className="relative min-h-[92vh] flex items-center px-5 sm:px-12 lg:px-20 pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-gradient-to-b from-[#FBF8F3] via-white to-white">
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          {/* Left Column: Hero Editorial Typography (Direct Impact) */}
-          <div className="lg:col-span-7 flex flex-col items-start z-10">
-            {/* Monumental Editorial Headline (Hits immediately with zero AI badge) */}
-            <h1 className="font-serif text-3xl sm:text-5xl md:text-7xl font-normal leading-[1.12] sm:leading-[1.08] tracking-tight mb-5 sm:mb-6 text-[#141210]">
-              Nature’s Finest Aromatics,{' '}
-              <span className="italic font-light text-[#C97E12] block sm:inline">
-                Curated for Global Trade.
-              </span>
-            </h1>
+      <section className="bg-[#0B1F3A] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Column (7 cols) */}
+            <div className="lg:col-span-7">
+              <div className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#C59238] mb-5">
+                <span className="w-6 h-[2px] bg-[#C59238]" />
+                <span>INSTITUTIONAL B2B SPICE SUPPLY • BENGALURU, INDIA</span>
+              </div>
 
-            {/* Concise Executive Subtext */}
-            <p className="font-sans text-sm sm:text-lg text-[#554D45] font-light max-w-xl leading-relaxed mb-6 sm:mb-8">
-              Direct harvest supply from South India&apos;s Western Ghats spice corridor. Verified essential oil potency, uniform optical precision grading, and compliant bulk export container fulfilment from Bengaluru.
-            </p>
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-[3.4rem] font-bold leading-[1.12] text-white mb-6">
+                Export-Grade Indian Spices. Engineered for Global Supply Chains.
+              </h1>
 
-            {/* Dual Clean Luxury CTAs */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              <Link
-                href="/products"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-sans uppercase tracking-wider text-white bg-[#0B3B2E] hover:bg-[#C97E12] transition-colors duration-300 flex items-center justify-center gap-2 shadow-sm font-semibold"
-              >
-                <span>Explore Spice Portfolio</span>
-                <ArrowUpRight className="w-4 h-4 text-[#E5A024]" />
-              </Link>
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mb-8">
+                Direct farm-gate sourcing from South India&apos;s Western Ghats, precision sieve &amp; density grading, and moisture-locked containerized fulfilment for wholesalers, importers, and food manufacturers.
+              </p>
 
-              <Link
-                href="/contact"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-sans uppercase tracking-wider text-[#141210] bg-[#FBF8F3] hover:bg-[#F2EAE0] border border-[#141210]/15 transition-all duration-300 flex items-center justify-center gap-2 font-semibold"
-              >
-                <span>Request Export Sample</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#C97E12]" />
-              </Link>
+              {/* Primary Action Row */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 bg-[#C59238] hover:bg-[#B3812C] text-[#0B1F3A] font-bold px-7 py-3.5 rounded-md text-sm transition-colors shadow-sm"
+                >
+                  <span>Request Commercial Quote</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center gap-2 border border-white/25 hover:bg-white/10 text-white font-medium px-7 py-3.5 rounded-md text-sm transition-colors"
+                >
+                  <span>View Product Specifications</span>
+                </Link>
+              </div>
+
+              {/* 4-Column Institutional Proof Strip */}
+              <div className="border-t border-white/15 mt-10 pt-7 grid grid-cols-2 sm:grid-cols-4 gap-6">
+                {COMPANY_INFO.proofStrip.map((item) => (
+                  <div key={item.label}>
+                    <div className="font-heading text-sm sm:text-base font-bold text-white">
+                      {item.label}
+                    </div>
+                    <div className="text-xs text-slate-300 mt-1">
+                      {item.detail}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Origin Accreditation Note */}
-            <div className="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-[#141210]/10 flex flex-wrap items-center gap-4 sm:gap-6 text-[11px] font-sans text-[#554D45] font-medium tracking-wide">
-              <span className="flex items-center gap-1.5">
-                <span className="text-[#C97E12]">✦</span> Spices Board of India
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-[#C97E12]">✦</span> 100% Single-Origin Traceability
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-[#C97E12]">✦</span> Direct Bengaluru Trade Desk
-              </span>
+            {/* Right Column (5 cols) */}
+            <div className="lg:col-span-5">
+              <div className="rounded-xl overflow-hidden border border-white/15 shadow-2xl relative aspect-[16/11] bg-[#143159]">
+                <Image
+                  src={VISUAL_ASSETS.heroTradeSpices.path}
+                  alt={VISUAL_ASSETS.heroTradeSpices.alt}
+                  fill
+                  priority
+                  className="object-cover"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-[#0B1F3A]/90 backdrop-blur-md border-t border-white/15 px-5 py-3.5">
+                  <div className="text-xs sm:text-sm text-white">
+                    <span className="font-bold text-[#C59238] mr-1.5">Origin Corridor:</span>
+                    <span className="text-slate-200 font-medium">
+                      Idukki • Coorg • Wayanad • Chikmagalur
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Right Column: Interactive 3D Trio Showcase (Three.js WebGL Gyroscope) */}
-          <div className="lg:col-span-5 flex items-center justify-center relative">
-            <HeroTrioStage3D />
           </div>
         </div>
       </section>
 
-      {/* Luxury Ticker Marquee */}
-      <div className="relative w-full py-3.5 bg-[#FBF8F3] border-y border-[#141210]/8 overflow-hidden">
-        <div className="flex whitespace-nowrap animate-marquee">
-          {[...Array(2)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-8 text-xs font-sans tracking-[0.2em] text-[#554D45] uppercase px-4 font-medium"
-            >
-              <span>Direct Western Ghats Sourcing</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>8mm+ Extra Bold Cardamom</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>TGSEB Malabar Tellicherry Pepper</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>Hand-Picked Lal Pari Cloves</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>FCL &amp; LCL Worldwide Dispatch</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>100% Laboratory Verified Purity</span>
-              <span className="text-[#C97E12]">✦</span>
-              <span>Bengaluru Trade Gateway</span>
-              <span className="text-[#C97E12]">✦</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ======================================================== */}
-      {/* SECTION 01: GREEN CARDAMOM (LEFT -> CENTRE-LEFT SWEEP) */}
+      {/* SECTION 2: CORE EXPORT PRODUCT PORTFOLIO */}
       {/* ======================================================== */}
-      <SyncedSpiceSection
-        spiceType="cardamom"
-        direction="left-to-center"
-        badge="The Queen of Spices • Extra Bold AGEB"
-        title="Green Cardamom"
-        botanical={`${SPICES.cardamom.botanicalName} • ${SPICES.cardamom.origin}`}
-        description={SPICES.cardamom.shortDescription}
-        specs={[
-          { label: 'Grade Calibration', value: '8mm+ Extra Bold (AGEB)' },
-          { label: 'HS Tariff Code', value: '0908.31.00' },
-          { label: 'Volatile Essential Oil', value: '7.5% – 8.8% v/w', highlight: true },
-          { label: 'Moisture Standard', value: '< 10.5% Retention' },
-          { label: '20ft FCL Container Capacity', value: '~11.0 Metric Tons' },
-        ]}
-        quoteHref="/contact?spice=cardamom"
-        fullSpecHref="/products?spice=cardamom"
-        bgColor="bg-white"
-        accentColor="#0B3B2E"
-      />
-
-      {/* ======================================================== */}
-      {/* SECTION 02: BLACK PEPPER (RIGHT -> LEFT VORTEX SWEEP) */}
-      {/* ======================================================== */}
-      <SyncedSpiceSection
-        spiceType="pepper"
-        direction="right-to-left"
-        badge="The King of Spices • Tellicherry TGSEB"
-        title="Black Pepper"
-        botanical={`${SPICES.pepper.botanicalName} • ${SPICES.pepper.origin}`}
-        description={SPICES.pepper.shortDescription}
-        specs={[
-          { label: 'Garbled Export Grade', value: 'Tellicherry TGSEB / MG-1' },
-          { label: 'HS Tariff Code', value: '0904.11.10' },
-          { label: 'Bulk Density Benchmark', value: '550 – 585 Grams / Liter' },
-          { label: 'Piperine Alkaloid Content', value: '5.5% – 7.2% Potency', highlight: true },
-          { label: '20ft FCL Container Capacity', value: '~15.0 Metric Tons' },
-        ]}
-        quoteHref="/contact?spice=pepper"
-        fullSpecHref="/products?spice=pepper"
-        bgColor="bg-[#FBF8F3]/60"
-        accentColor="#141210"
-      />
-
-      {/* ======================================================== */}
-      {/* SECTION 03: WHOLE CLOVES (LEFT -> CENTRE-LEFT RISING SPIRAL) */}
-      {/* ======================================================== */}
-      <SyncedSpiceSection
-        spiceType="clove"
-        direction="left-to-center"
-        badge="Clove Botanical Reserve • Lal Pari Hand-Picked"
-        title="Whole Cloves"
-        botanical={`${SPICES.clove.botanicalName} • ${SPICES.clove.origin}`}
-        description={SPICES.clove.shortDescription}
-        specs={[
-          { label: 'Grade Standard', value: 'Hand-Picked Lal Pari Bold' },
-          { label: 'HS Tariff Code', value: '0907.10.10' },
-          { label: 'Eugenol Volatile Oil', value: '17.0% – 21.0% v/w', highlight: true },
-          { label: 'Headless Buds Tolerance', value: '< 2.0% Maximum' },
-          { label: '20ft FCL Container Capacity', value: '~11.0 Metric Tons' },
-        ]}
-        quoteHref="/contact?spice=clove"
-        fullSpecHref="/products?spice=clove"
-        bgColor="bg-white"
-        accentColor="#8F3518"
-      />
-
-      {/* ======================================================== */}
-      {/* WHY INTERNATIONAL BUYERS PARTNER WITH AROVA (Editorial) */}
-      {/* ======================================================== */}
-      <section className="relative py-16 sm:py-28 px-5 sm:px-12 lg:px-20 bg-[#FBF8F3] border-b border-[#141210]/8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-5 sm:gap-6 pb-6 border-b border-[#141210]/10">
-            <div>
-              <span className="text-xs font-sans tracking-[0.24em] text-[#C97E12] uppercase block mb-2 font-semibold">
-                Commercial Standards
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal text-[#141210]">
-                Why Global Importers Partner with Arova
+      <section className="bg-white py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="max-w-3xl mb-14">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#C59238] mb-3">
+                <span className="w-5 h-[2px] bg-[#C59238]" />
+                <span>CORE EXPORT PORTFOLIO</span>
+              </div>
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#0D1B2A]">
+                Three Flagship Indian Spices, Graded to Exact Buyer Specs
               </h2>
             </div>
-            <p className="font-sans text-sm text-[#554D45] font-light max-w-md leading-relaxed">
-              Eliminating the traditional friction points of Indian spice exports: unverified grade blending, erratic moisture levels, and secondary market intermediaries.
-            </p>
-          </div>
+          </Reveal>
 
-          {/* Clean 4-Column Architectural Grid (No 01/02 numbering) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="pt-6 border-t-2 border-[#0B3B2E]">
-              <div className="flex items-center gap-1.5 text-xs font-sans text-[#0B3B2E] font-bold mb-3 tracking-wider uppercase">
-                <span className="text-[#C97E12]">✦</span>
-                <span>Estate-Direct Sourcing</span>
-              </div>
-              <h3 className="font-serif text-xl text-[#141210] mb-2 font-medium">
-                Single-Origin Integrity
-              </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#554D45] font-light leading-relaxed">
-                Direct grower partnerships across high-elevation Western Ghats plantations (Idukki, Coorg, Chikmagalur). Zero floor collection and zero spent spice blending.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {SPICE_LIST.map((spice, idx) => {
+              const asset = VISUAL_ASSETS[spice.imageKey];
+              return (
+                <Reveal key={spice.id} delay={idx * 0.06} className="h-full">
+                  <article className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-[#0B1F3A]/30 transition-all flex flex-col h-full">
+                    {/* Macro Image + HS Code Tag */}
+                    <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden">
+                      <Image
+                        src={asset.path}
+                        alt={asset.alt}
+                        fill
+                        className="object-cover"
+                      />
+                      <span className="absolute top-3.5 right-3.5 bg-[#0B1F3A] text-white text-xs font-semibold px-3 py-1.5 rounded-md shadow-sm tabular-nums border border-white/15">
+                        {spice.hsCode}
+                      </span>
+                    </div>
 
-            <div className="pt-6 border-t-2 border-[#0B3B2E]">
-              <div className="flex items-center gap-1.5 text-xs font-sans text-[#0B3B2E] font-bold mb-3 tracking-wider uppercase">
-                <span className="text-[#C97E12]">✦</span>
-                <span>Volatile Oil Stability</span>
-              </div>
-              <h3 className="font-serif text-xl text-[#141210] mb-2 font-medium">
-                Essential Compound Defense
-              </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#554D45] font-light leading-relaxed">
-                Solar-hybrid and dehumidified curing keeps essential volatile oils (Cineole, Piperine, Eugenol) chemically stable throughout trans-ocean shipping voyages.
-              </p>
-            </div>
+                    {/* Card Body */}
+                    <div className="p-6 sm:p-7 flex-1 flex flex-col">
+                      <div className="mb-5">
+                        <h3 className="font-heading text-xl font-bold text-[#0D1B2A]">
+                          {spice.commonName}
+                        </h3>
+                        <p className="text-xs font-medium text-slate-500 mt-1">
+                          {spice.botanicalName} • {spice.origin}
+                        </p>
+                      </div>
 
-            <div className="pt-6 border-t-2 border-[#0B3B2E]">
-              <div className="flex items-center gap-1.5 text-xs font-sans text-[#0B3B2E] font-bold mb-3 tracking-wider uppercase">
-                <span className="text-[#C97E12]">✦</span>
-                <span>Aroma-Lock Barrier</span>
-              </div>
-              <h3 className="font-serif text-xl text-[#141210] mb-2 font-medium">
-                Moisture &amp; Gas Protection
-              </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#554D45] font-light leading-relaxed">
-                Multi-layer EVOH vacuum foil pouches, 5-ply reinforced master cartons, and UV-stabilized bulk sacks ensure zero mold proliferation during freight.
-              </p>
-            </div>
+                      {/* 4-Row Clean Technical Summary */}
+                      <div className="divide-y divide-slate-100 border-y border-slate-100 mb-6 text-sm flex-1">
+                        {spice.cardSummaryRows.map((row) => (
+                          <div
+                            key={row.label}
+                            className="py-2.5 flex items-center justify-between gap-4"
+                          >
+                            <span className="text-slate-500">{row.label}</span>
+                            <span className="font-semibold text-[#0D1B2A] text-right tabular-nums">
+                              {row.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
 
-            <div className="pt-6 border-t-2 border-[#0B3B2E]">
-              <div className="flex items-center gap-1.5 text-xs font-sans text-[#0B3B2E] font-bold mb-3 tracking-wider uppercase">
-                <span className="text-[#C97E12]">✦</span>
-                <span>Statutory Compliance</span>
-              </div>
-              <h3 className="font-serif text-xl text-[#141210] mb-2 font-medium">
-                Phytosanitary &amp; SGS Audited
-              </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#554D45] font-light leading-relaxed">
-                Every container ships with authenticated Phytosanitary Certification, Certificate of Origin (CoO), and independent pre-shipment surveyor inspection.
-              </p>
-            </div>
+                      {/* Dual Bottom Action Bar */}
+                      <div className="flex items-center justify-between gap-4 pt-1">
+                        <Link
+                          href={`/contact?spice=${spice.id}`}
+                          className="inline-flex items-center justify-center bg-[#0B1F3A] hover:bg-[#143159] text-white font-semibold text-xs px-5 py-2.5 rounded-md transition-colors"
+                        >
+                          Request Quote
+                        </Link>
+                        <Link
+                          href={`/products?spice=${spice.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[#0B1F3A] hover:text-[#C59238] transition-colors"
+                        >
+                          <span>Full Specs</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* PRE-FOOTER EXECUTIVE CTA (Smooth direct flow) */}
+      {/* SECTION 3: BUILT FOR COMMERCIAL RELIABILITY */}
       {/* ======================================================== */}
-      <section className="relative py-16 sm:py-28 px-5 sm:px-12 lg:px-20 bg-white">
-        <div className="max-w-5xl mx-auto rounded-3xl p-6 sm:p-14 bg-[#FBF8F3] border border-[#141210]/10 shadow-sm text-center">
-          <span className="text-xs font-sans tracking-[0.25em] text-[#C97E12] uppercase block mb-3 font-semibold">
-            B2B Inquiries &amp; Quotations
-          </span>
-          <h2 className="font-serif text-2xl sm:text-5xl text-[#141210] font-normal mb-3 sm:mb-4">
-            Ready to Source India&apos;s Finest Harvest?
-          </h2>
-          <p className="font-sans text-xs sm:text-base text-[#554D45] font-light max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed">
-            Connect directly with our commercial export desk in Bengaluru. Request official technical data sheets, physical lab-verified evaluation samples, or containerized CIF quotations for your destination port.
-          </p>
+      <section className="bg-[#F4F7FA] py-20 lg:py-24 border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-14">
+              <div className="lg:col-span-6">
+                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#C59238] mb-3">
+                  <span className="w-5 h-[2px] bg-[#C59238]" />
+                  <span>COMMERCIAL GOVERNANCE</span>
+                </div>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#0D1B2A]">
+                  Built for Commercial Reliability
+                </h2>
+              </div>
+              <div className="lg:col-span-6">
+                <p className="text-base text-[#334155] leading-relaxed">
+                  International food manufacturers and spice wholesalers face critical trade risks—inconsistent sieve grading, ocean-transit moisture spoilage, and opaque broker supply chains. Arova Spices enforces institutional batch control from estate procurement to port stuffing.
+                </p>
+              </div>
+            </div>
+          </Reveal>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <Link
-              href="/contact"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-sans uppercase tracking-wider text-white bg-[#0B3B2E] hover:bg-[#C97E12] transition-colors font-semibold shadow-sm text-center"
-            >
-              Request Bulk Quotation
-            </Link>
-
-            <a
-              href={COMPANY_INFO.contact.whatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-sans uppercase tracking-wider text-[#141210] bg-white border border-[#141210]/15 hover:border-[#0B3B2E] transition-colors flex items-center justify-center gap-2 font-semibold shadow-2xs"
-            >
-              <WhatsAppIcon className="w-4 h-4 fill-[#25D366]" />
-              <span>WhatsApp Trade Desk</span>
-              <span className="text-[#0B3B2E]">({COMPANY_INFO.contact.phoneFormatted})</span>
-            </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {PILLARS.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <Reveal key={pillar.title} delay={idx * 0.05} className="h-full">
+                  <div className="bg-white border border-slate-200 rounded-xl p-7 h-full flex flex-col shadow-sm">
+                    <div className="w-11 h-11 rounded-lg bg-[#0B1F3A] text-[#C59238] flex items-center justify-center mb-5 flex-shrink-0">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-heading text-lg font-bold text-[#0D1B2A] mb-2.5">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-sm text-[#334155] leading-relaxed">
+                      {pillar.description}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* SECTION 4: HOW WE FULFIL GLOBAL ORDERS */}
+      {/* ======================================================== */}
+      <section className="bg-[#0B1F3A] text-white py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="max-w-3xl mb-14">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#C59238] mb-3">
+                <span className="w-5 h-[2px] bg-[#C59238]" />
+                <span>EXPORT FULFILMENT WORKFLOW</span>
+              </div>
+              <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white">
+                How We Fulfil Global Orders
+              </h2>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {WORKFLOW_STEPS.map((item, idx) => (
+              <Reveal key={item.step} delay={idx * 0.05}>
+                <div className="border-t-2 border-[#C59238]/60 pt-6">
+                  <div className="font-heading text-sm font-extrabold text-[#C59238] tracking-widest mb-3 tabular-nums">
+                    {item.step}
+                  </div>
+                  <h3 className="font-heading text-lg font-bold text-white mb-2.5">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* SECTION 5: PACKAGING & CONTAINER LOGISTICS SHOWCASE */}
+      {/* ======================================================== */}
+      <section className="bg-white py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <Reveal>
+              <div className="rounded-xl overflow-hidden shadow-lg border border-slate-200 relative aspect-[16/10] bg-slate-100">
+                <Image
+                  src={VISUAL_ASSETS.exportPackaging.path}
+                  alt={VISUAL_ASSETS.exportPackaging.alt}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.08}>
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#C59238] mb-3">
+                  <span className="w-5 h-[2px] bg-[#C59238]" />
+                  <span>LOGISTICS &amp; BARRIER PACKING</span>
+                </div>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-[#0D1B2A] mb-5">
+                  Export Packaging Standards
+                </h2>
+                <p className="text-base text-[#334155] leading-relaxed mb-7">
+                  Ocean transit demands moisture-impermeable protection to retain natural chlorophyll color, eugenol intensity, and volatile oil yields upon port arrival. Every shipment is packed in dedicated hygiene-monitored facilities.
+                </p>
+
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#0B1F3A] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#334155]">
+                      <strong className="text-[#0D1B2A] font-semibold">Nitrogen-Flushed Foil Vacuum Pouches:</strong> 5 kg / 10 kg inner vacuum pouches sealed inside 5-ply heavy corrugated export cartons.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#0B1F3A] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#334155]">
+                      <strong className="text-[#0D1B2A] font-semibold">Moisture-Lined Bulk Sacks:</strong> 25 kg multi-wall kraft bags and 50 kg high-density PP / food-grade jute sacks with HDPE inner liners.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#0B1F3A] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#334155]">
+                      <strong className="text-[#0D1B2A] font-semibold">Private-Label Importer Cartons:</strong> Custom buyer stencil markings, lot barcoding, and private-label outer cartons available for contract volumes.
+                    </span>
+                  </li>
+                </ul>
+
+                {/* Shipping Terms Strip */}
+                <div className="bg-[#F4F7FA] border border-slate-200 rounded-lg p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div className="px-2 py-1">
+                    <div className="text-xs font-bold text-[#0B1F3A]">20ft &amp; 40ft FCL</div>
+                  </div>
+                  <div className="px-2 py-1 border-l border-slate-200">
+                    <div className="text-xs font-bold text-[#0B1F3A]">LCL Consolidation</div>
+                  </div>
+                  <div className="px-2 py-1 sm:border-l border-slate-200">
+                    <div className="text-xs font-bold text-[#0B1F3A]">Express Air Cargo</div>
+                  </div>
+                  <div className="px-2 py-1 border-l border-slate-200">
+                    <div className="text-xs font-bold text-[#C59238]">FOB • CIF • EXW</div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================== */}
+      {/* SECTION 6: EXECUTIVE B2B CONVERSION BANNER */}
+      {/* ======================================================== */}
+      <section className="bg-[#F4F7FA] py-20 border-t border-slate-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="bg-white border border-slate-200 border-t-4 border-t-[#0B1F3A] rounded-xl p-8 sm:p-10 lg:p-12 shadow-sm text-center">
+              <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0D1B2A] mb-4">
+                Ready to Evaluate Our Current Harvest Grades?
+              </h2>
+              <p className="text-base text-[#334155] max-w-2xl mx-auto leading-relaxed mb-8">
+                Connect directly with our Bengaluru export desk for current seasonal pricing, technical data sheets, or air-couriered evaluation samples.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/contact"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0B1F3A] hover:bg-[#143159] text-white font-semibold px-8 py-3.5 rounded-md text-sm transition-colors shadow-sm"
+                >
+                  <span>Request Bulk Quotation</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <a
+                  href={COMPANY_INFO.contact.whatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A] hover:text-white font-semibold px-7 py-3.5 rounded-md text-sm transition-colors tabular-nums"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                  <span>WhatsApp Trade Desk: {COMPANY_INFO.contact.phoneFormatted}</span>
+                </a>
+              </div>
+
+              <div className="mt-7 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500">
+                <ShieldCheck className="w-4 h-4 text-[#C59238]" />
+                <span>24-Hour Commercial Quotation Desk • Bengaluru, India</span>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </div>

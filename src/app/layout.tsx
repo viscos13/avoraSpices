@@ -1,30 +1,44 @@
 import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { QuickConnectPill } from '@/components/layout/QuickConnectPill';
-import { Preloader } from '@/components/ui/Preloader';
+
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
-  themeColor: '#FFFFFF',
+  themeColor: '#0B1F3A',
 };
 
 export const metadata: Metadata = {
-  title: 'Arova Spices | Premium Indian Spice Export • Bengaluru, India',
+  title: 'Arova Spices | Institutional Indian Spice Exports • Bengaluru, India',
   description:
-    'International B2B exporter of single-origin Indian spices: 8mm+ Extra Bold Green Cardamom, Tellicherry Black Pepper (TGSEB), and Hand-Picked Lal Pari Cloves. Headquartered in Bengaluru, India.',
+    'B2B international bulk spice exporter headquartered in Bengaluru, India. Single-origin 8mm+ Green Cardamom (AGEB), Malabar Black Pepper (TGSEB), and Hand-Picked Lal Pari Whole Cloves.',
   keywords: [
-    'Indian Spice Export',
-    'Green Cardamom B2B',
-    'Tellicherry Black Pepper Bulk',
-    'Whole Cloves Export',
-    'Spices Board of India exporter',
-    'Bengaluru Spice Importers',
-    'FCL LCL Spices Export',
+    'Indian Spice Export B2B',
+    'Green Cardamom Wholesale Exporter',
+    'Tellicherry Black Pepper TGSEB Bulk',
+    'Whole Cloves Lal Pari Export',
+    'Spices Board Exporter India',
+    'Bengaluru Bulk Spice Supplier',
+    'FCL LCL Spices Export India',
   ],
   icons: {
     icon: '/favicon.svg',
@@ -37,21 +51,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-white text-ink antialiased selection:bg-saffron/20 selection:text-ink font-sans">
-        {/* Editorial Preloader */}
-        <Preloader />
-
-        {/* Global Architectural Navigation */}
+    <html lang="en" className={`${jakartaSans.variable} ${inter.variable}`}>
+      <body className="bg-white text-[#334155] antialiased selection:bg-[#0B1F3A] selection:text-white font-sans">
         <Navbar />
-
-        {/* Main Content Area */}
-        <main className="relative z-10">{children}</main>
-
-        {/* Deep Malabar Emerald Architectural Footer */}
+        <main className="min-h-screen">{children}</main>
         <Footer />
-
-        {/* Floating Quick Connect: 1-Tap WhatsApp Trade Desk + Request Quote */}
         <QuickConnectPill />
       </body>
     </html>

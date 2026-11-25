@@ -1,61 +1,69 @@
-// Assets registry for Arova Spices luxury visual assets
+// Commercial photography registry for Arova Spices B2B Portal
 
 export interface VisualAsset {
   id: string;
   title: string;
   alt: string;
   path: string;
-  caption?: string;
-  category: 'hero' | 'macro' | 'origin' | 'quality';
+  caption: string;
+  category: 'hero' | 'product' | 'quality' | 'logistics' | 'origin';
 }
 
 export const VISUAL_ASSETS: Record<string, VisualAsset> = {
-  heroSpicesDark: {
-    id: 'hero-spices-dark',
-    title: 'The Flagship Spice Trilogy',
-    alt: 'Dramatic dark slate overhead macro shot of emerald green cardamom pods, glossy black peppercorns, and whole cloves with warm golden rim lighting',
-    path: '/images/hero-spices-dark.jpg',
-    caption: 'Estate-graded green cardamom, Malabar black pepper, and whole cloves on dark obsidian stone.',
+  heroTradeSpices: {
+    id: 'hero-trade-spices',
+    title: 'Export-Grade Flagship Spices',
+    alt: 'Sorted Indian green cardamom pods, bold Tellicherry black peppercorns, and whole cloves resting in dark slate and stainless steel commercial grading trays',
+    path: '/images/hero-trade-spices.jpg',
+    caption: 'Origin Corridor: Idukki • Coorg • Wayanad • Chikmagalur',
     category: 'hero',
   },
-  cardamomMacro: {
-    id: 'cardamom-macro',
-    title: '8mm+ Bold Alleppey Green Cardamom',
-    alt: 'Studio macro of bold 8mm+ vibrant green cardamom pods on dark volcanic stone with subtle golden dust particles',
-    path: '/images/cardamom-macro.jpg',
-    caption: 'Deep emerald husks with high volatile oil seed retention and uniform 8mm+ calibration.',
-    category: 'macro',
+  productCardamom: {
+    id: 'product-cardamom',
+    title: '8mm+ Extra Bold Green Cardamom (AGEB)',
+    alt: 'Commercial macro of uniform, natural olive-emerald 8mm+ green cardamom pods',
+    path: '/images/product-cardamom.jpg',
+    caption: 'Natural unbleached 8.0mm+ Alleppey Green Extra Bold pods, moisture-checked below 10.5%.',
+    category: 'product',
   },
-  pepperMacro: {
-    id: 'pepper-macro',
-    title: 'Tellicherry Garbled Special Extra Bold (TGSEB)',
-    alt: 'High-contrast dramatic close-up of wrinkled glossy Tellicherry black peppercorns cascading on dark charcoal slate',
-    path: '/images/pepper-macro.jpg',
-    caption: 'High-density 580+ GL Tellicherry black peppercorns with intense piperine potency.',
-    category: 'macro',
+  productPepper: {
+    id: 'product-pepper',
+    title: 'Tellicherry Black Pepper (TGSEB / MG-1)',
+    alt: 'Commercial macro of bold, heavyweight Malabar black peppercorns with natural textured pericarp',
+    path: '/images/product-pepper.jpg',
+    caption: 'High-density 550–585 G/L Tellicherry & Malabar garbled black peppercorns.',
+    category: 'product',
   },
-  cloveMacro: {
-    id: 'clove-macro',
-    title: 'Hand-Picked Lal Pari Whole Cloves',
-    alt: 'Warm moody close-up of whole hand-picked reddish-brown cloves with rich bronze highlights',
-    path: '/images/clove-macro.jpg',
-    caption: 'Intact four-cleft calyx crowns rich in eugenol essential oil with minimal headless stems.',
-    category: 'macro',
+  productCloves: {
+    id: 'product-cloves',
+    title: 'Hand-Picked Whole Cloves (Lal Pari)',
+    alt: 'Commercial macro of intact reddish-mahogany whole cloves with unbroken four-prong crowns',
+    path: '/images/product-cloves.jpg',
+    caption: 'Hand-graded Lal Pari whole cloves yielding 17%–21% natural eugenol essential oil.',
+    category: 'product',
   },
-  westernGhatsEstate: {
-    id: 'western-ghats-estate',
-    title: 'Western Ghats Biodiversity Canopy',
-    alt: 'Misty, cinematic golden-hour aerial view of lush South Indian spice plantations in the Western Ghats',
-    path: '/images/western-ghats-estate.jpg',
-    caption: 'High-elevation microclimates between 800m and 1,400m altitude yielding unmatched aromatic concentration.',
-    category: 'origin',
-  },
-  qualityLabGrading: {
-    id: 'quality-lab-grading',
-    title: 'Export Quality & Moisture Control Lab',
-    alt: 'Modern, hygienic spice grading and export quality laboratory showcasing clean inspection and vacuum-sealed bulk export packs',
-    path: '/images/quality-lab-grading.jpg',
-    caption: 'Stringent laboratory testing for volatile oil %, moisture thresholds, and aflatoxin/pesticide compliance.',
+  qualityInspection: {
+    id: 'quality-inspection',
+    title: 'Analytical Moisture & Sieve Grading Lab',
+    alt: 'Modern sterile spice quality assurance laboratory with digital moisture analyzer, stainless steel grading sieves, and QA inspector',
+    path: '/images/quality-inspection.jpg',
+    caption: 'Batch-by-batch physical sieve calibration, moisture testing, and volatile oil assay before shipment.',
     category: 'quality',
+  },
+  exportPackaging: {
+    id: 'export-packaging',
+    title: 'Export Barrier Packing & Palletized Warehousing',
+    alt: 'Clean commercial export warehouse with vacuum-sealed aluminum foil spice packs, 5-ply export cartons, and palletized bulk PP and jute sacks',
+    path: '/images/export-packaging.jpg',
+    caption: 'Nitrogen-flushed foil barrier pouches, 5-ply master cartons, and palletized bulk sacks prepared for container loading.',
+    category: 'logistics',
+  },
+  westernGhatsOrigin: {
+    id: 'western-ghats-origin',
+    title: 'Western Ghats Spice Cultivation Belt',
+    alt: 'Crisp sunlit panorama of South Indian Western Ghats cardamom and black pepper estates',
+    path: '/images/western-ghats-origin.jpg',
+    caption: 'Direct farm-gate procurement corridor across Idukki, Coorg, Wayanad, and Chikmagalur estates.',
+    category: 'origin',
   },
 };

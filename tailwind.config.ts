@@ -9,50 +9,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        stage: {
-          white: "#FFFFFF",
-          pearl: "#FBF8F3",
-          linen: "#F4EFE6",
+        navy: {
+          DEFAULT: "#0B1F3A",
+          deep: "#071529",
+          royal: "#143159",
+          muted: "#1E3A5F",
         },
-        emerald: {
-          brand: "#0B3B2E",
-          dark: "#082920",
-          deep: "#051D17",
-          light: "#125644",
-          soft: "#E8F2EE",
+        gold: {
+          DEFAULT: "#C59238",
+          hover: "#B3812C",
+          light: "#D9AE5F",
+          tint: "#F9F3E8",
         },
-        saffron: {
-          DEFAULT: "#C97E12",
-          warm: "#E5A024",
-          light: "#F7BE58",
-          soft: "#FDF5E8",
-        },
-        ink: {
-          DEFAULT: "#141210",
-          muted: "#4A4540",
-          soft: "#736C65",
-        },
-        terracotta: {
-          DEFAULT: "#8F3518",
-          dark: "#6D250E",
-          soft: "#FCEEE9",
+        slate: {
+          ice: "#F4F7FA",
+          ink: "#0D1B2A",
+          body: "#334155",
         },
       },
       fontFamily: {
-        serif: ["var(--font-playfair)", "Georgia", "serif"],
-        sans: ["var(--font-manrope)", "system-ui", "sans-serif"],
-      },
-      animation: {
-        "marquee": "marquee 35s linear infinite",
-      },
-      keyframes: {
-        marquee: {
-          "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-50%)" },
-        },
+        heading: ["var(--font-jakarta)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
     },
   },
   plugins: [],
 };
+
 export default config;

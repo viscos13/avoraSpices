@@ -17,15 +17,14 @@ export function QuickConnectPill() {
     return () => window.removeEventListener('mobile-menu-toggle', handleMenuToggle);
   }, []);
 
-  // When mobile hamburger menu is open, remove the floating button so it never overlaps
   if (isMenuOpen) {
     return null;
   }
 
   return (
     <aside
-      aria-label="Direct WhatsApp Contact"
-      className="floating-whatsapp-btn fixed z-40 transition-all duration-300"
+      aria-label="WhatsApp Trade Desk"
+      className="floating-whatsapp-btn fixed z-40"
       style={{
         bottom: 'max(1.25rem, env(safe-area-inset-bottom, 1.25rem))',
         right: 'max(1.25rem, env(safe-area-inset-right, 1.25rem))',
@@ -36,14 +35,10 @@ export function QuickConnectPill() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp Trade Desk (+91 70266 47347)"
-        className="flex items-center gap-2.5 px-4 sm:px-5 py-3 rounded-full bg-[#25D366] hover:bg-[#20ba5a] active:scale-95 text-white font-sans text-xs font-bold tracking-wide shadow-lg shadow-[#25D366]/35 hover:shadow-xl hover:shadow-[#25D366]/45 transition-all duration-300 group"
+        className="flex items-center gap-2.5 px-4 py-2.5 rounded-md bg-[#15803D] hover:bg-[#166534] text-white border border-white/15 font-sans text-xs font-semibold tracking-wide shadow-lg hover:shadow-xl transition-all duration-200"
       >
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-        </span>
         <WhatsAppIcon className="w-4 h-4 fill-white flex-shrink-0" />
-        <span className="font-semibold whitespace-nowrap">WhatsApp Trade Desk</span>
+        <span className="whitespace-nowrap">WhatsApp Trade Desk</span>
       </a>
     </aside>
   );

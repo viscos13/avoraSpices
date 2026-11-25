@@ -4,113 +4,76 @@ import React from 'react';
 
 interface LogoProps {
   className?: string;
-  variant?: 'full' | 'emblem' | 'wordmark';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  inverted?: boolean; // For dark background like Deep Emerald footer (#082920)
+  size?: 'sm' | 'md' | 'lg';
+  inverted?: boolean;
 }
 
 export function Logo({
   className = '',
-  variant = 'full',
   size = 'md',
   inverted = false,
 }: LogoProps) {
-  const sizeMap = {
-    sm: { emblem: 28, text: 'text-base', sub: 'text-[9px]' },
-    md: { emblem: 36, text: 'text-lg sm:text-xl', sub: 'text-[10px]' },
-    lg: { emblem: 44, text: 'text-xl sm:text-2xl', sub: 'text-[11px]' },
-    xl: { emblem: 54, text: 'text-2xl sm:text-3xl', sub: 'text-xs' },
+  const sizes = {
+    sm: { box: 30, title: 'text-base', sub: 'text-[9px]' },
+    md: { box: 36, title: 'text-lg', sub: 'text-[10px]' },
+    lg: { box: 40, title: 'text-xl', sub: 'text-[10px]' },
   };
 
-  const currentSize = sizeMap[size];
-
-  const emblemSvg = (
-    <svg
-      width={currentSize.emblem}
-      height={currentSize.emblem}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="inline-block transition-transform duration-500 group-hover:rotate-6 flex-shrink-0"
-      aria-label="Arova Spices Crest"
-    >
-      <defs>
-        <linearGradient id="arovaGoldEmblem" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#E5A024" />
-          <stop offset="50%" stopColor="#C97E12" />
-          <stop offset="100%" stopColor="#8F3518" />
-        </linearGradient>
-      </defs>
-
-      {/* Outer Fine Geometric Ring */}
-      <circle cx="50" cy="50" r="44" stroke="url(#arovaGoldEmblem)" strokeWidth="1.2" opacity="0.4" />
-      <circle cx="50" cy="50" r="40" stroke="url(#arovaGoldEmblem)" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.5" />
-
-      {/* Stylized Three-Faceted Fusiform Cardamom Pod Vessel */}
-      <g transform="translate(50, 50) rotate(-15) translate(-50, -50)">
-        <path
-          d="M50 16 C34 30 33 62 50 84 C41 68 41 32 50 16 Z"
-          fill="url(#arovaGoldEmblem)"
-          opacity="0.95"
-        />
-        <path
-          d="M50 16 C66 30 67 62 50 84 C59 68 59 32 50 16 Z"
-          fill="url(#arovaGoldEmblem)"
-          opacity="0.75"
-        />
-        <path
-          d="M50 14 L50 86"
-          stroke="url(#arovaGoldEmblem)"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-      </g>
-
-      {/* Compass Star Apex Overlay */}
-      <path
-        d="M50 20 L52.5 38 L68.5 40.5 L52.5 43 L50 61 L47.5 43 L31.5 40.5 L47.5 38 Z"
-        fill={inverted ? '#FFFFFF' : '#0B3B2E'}
-        opacity="0.9"
-      />
-      <circle cx="50" cy="40.5" r="2.2" fill={inverted ? '#082920' : '#FFFFFF'} />
-    </svg>
-  );
-
-  const wordmark = (
-    <div className="flex flex-col leading-none">
-      <div className="flex items-center gap-1.5">
-        <span
-          className={`font-serif tracking-[0.18em] font-semibold uppercase ${currentSize.text} transition-colors ${
-            inverted ? 'text-white' : 'text-[#141210]'
-          }`}
-        >
-          Arova
-        </span>
-        <span
-          className={`font-serif tracking-[0.18em] font-light uppercase ${currentSize.text} transition-colors ${
-            inverted ? 'text-[#E5A024]' : 'text-[#C97E12]'
-          }`}
-        >
-          Spices
-        </span>
-      </div>
-      <span
-        className={`font-sans tracking-[0.28em] uppercase ${currentSize.sub} font-semibold transition-colors mt-1 ${
-          inverted ? 'text-white/60' : 'text-[#554D45]'
-        }`}
-      >
-        Bengaluru • India
-      </span>
-    </div>
-  );
-
-  if (variant === 'emblem') return <div className={`group inline-flex ${className}`}>{emblemSvg}</div>;
-  if (variant === 'wordmark') return <div className={`group inline-flex ${className}`}>{wordmark}</div>;
+  const current = sizes[size];
 
   return (
-    <div className={`group inline-flex items-center gap-3 select-none ${className}`}>
-      {emblemSvg}
-      {wordmark}
+    <div className={`inline-flex items-center gap-3 select-none ${className}`}>
+      {/* Sharp Geometric Executive Emblem */}
+      <svg
+        width={current.box}
+        height={current.box}
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="flex-shrink-0"
+        aria-hidden="true"
+      >
+        <rect
+          width="40"
+          height="40"
+          rx="6"
+          fill={inverted ? '#143159' : '#0B1F3A'}
+        />
+        <rect
+          x="3"
+          y="3"
+          width="34"
+          height="34"
+          rx="4"
+          stroke="#C59238"
+          strokeWidth="1"
+          strokeOpacity="0.65"
+        />
+        <path
+          d="M20 8.5L30.5 30H25.9L23.7 25H16.3L14.1 30H9.5L20 8.5ZM20 14.5L17.6 21.2H22.4L20 14.5Z"
+          fill="#FFFFFF"
+        />
+        <rect x="16.5" y="26.5" width="7" height="1.8" rx="0.9" fill="#C59238" />
+      </svg>
+
+      {/* Bold Tracked Corporate Wordmark */}
+      <div className="flex flex-col leading-none">
+        <div className="flex items-center gap-1.5 font-heading font-extrabold tracking-[0.14em] uppercase">
+          <span className={`${current.title} ${inverted ? 'text-white' : 'text-[#0B1F3A]'}`}>
+            AROVA
+          </span>
+          <span className={`${current.title} text-[#C59238]`}>
+            SPICES
+          </span>
+        </div>
+        <span
+          className={`font-sans tracking-[0.2em] uppercase font-medium mt-1 ${current.sub} ${
+            inverted ? 'text-slate-300' : 'text-slate-500'
+          }`}
+        >
+          Bengaluru • India
+        </span>
+      </div>
     </div>
   );
 }

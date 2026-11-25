@@ -1,204 +1,197 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowUpRight, Phone } from 'lucide-react';
-import { Logo } from '../ui/Logo';
-import { WhatsAppIcon } from '../ui/WhatsAppIcon';
+import { Logo } from '@/components/ui/Logo';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { COMPANY_INFO } from '@/data/company';
+import { Phone, Menu, X, ArrowRight } from 'lucide-react';
 
 const NAV_LINKS = [
-  { name: 'Home', href: '/' },
-  { name: 'Spices', href: '/products' },
-  { name: 'Quality & Exports', href: '/quality' },
-  { name: 'Our Story', href: '/about' },
-  { name: 'Contact', href: '/contact' },
+  { href: '/', label: 'Home' },
+  { href: '/products', label: 'Products & Specs' },
+  { href: '/quality', label: 'Quality & Compliance' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Export Desk' },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Lock body scroll when mobile menu is open to prevent background scroll jank
-  // and dispatch event to hide floating widgets
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.classList.add('mobile-menu-active');
-      window.dispatchEvent(new CustomEvent('mobile-menu-toggle', { detail: { open: true } }));
-    } else {
-      document.body.style.overflow = '';
-      document.body.classList.remove('mobile-menu-active');
-      window.dispatchEvent(new CustomEvent('mobile-menu-toggle', { detail: { open: false } }));
-    }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.classList.remove('mobile-menu-active');
-      window.dispatchEvent(new CustomEvent('mobile-menu-toggle', { detail: { open: false } }));
-    };
-  }, [mobileMenuOpen]);
-
+  // Close mobile menu on route transition
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Synchronize body class and event for floating WhatsApp button isolation
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('mobile-menu-active');
+    } else {
+      document.body.classList.remove('mobile-menu-active');
+    }
+    window.dispatchEvent(
+      new CustomEvent('mobile-menu-toggle', { detail: { open: mobileMenuOpen } })
+    );
+  }, [mobileMenuOpen]);
+
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-[80] transition-all duration-300 ${
-          isScrolled
-            ? 'h-16 sm:h-20 bg-white/94 backdrop-blur-xl border-b border-[#141210]/8 shadow-sm'
-            : 'h-18 sm:h-22 bg-gradient-to-b from-white/95 via-white/70 to-transparent'
-        }`}
-        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
-      >
-        <div className="max-w-7xl mx-auto h-full px-4 sm:px-10 flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="relative z-50 flex items-center" aria-label="Arova Spices Home">
-            <Logo size={isScrolled ? 'sm' : 'md'} />
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 px-6 py-2.5 rounded-full bg-[#FBF8F3]/90 backdrop-blur-md border border-[#141210]/8 shadow-sm">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative font-sans text-xs tracking-[0.14em] font-medium transition-colors duration-200 py-1 ${
-                    isActive ? 'text-[#0B3B2E] font-semibold' : 'text-[#554D45] hover:text-[#141210]'
-                  }`}
-                >
-                  {link.name}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#0B3B2E] rounded-full"
-                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Header Right CTA */}
-          <div className="hidden lg:flex items-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-sans text-xs uppercase tracking-wider text-white font-medium bg-[#0B3B2E] hover:bg-[#C97E12] transition-colors duration-300 shadow-sm"
-            >
-              <span>Request Bulk Quote</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
+    <div className="sticky top-0 z-50 w-full">
+      {/* Top Corporate Utility Strip */}
+      <div className="bg-[#071529] text-slate-300 text-xs py-2 border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+          <div className="truncate font-medium tracking-wide">
+            <span className="hidden sm:inline">
+              Single-Origin Indian Spice Exports • Headquartered in Bengaluru, India
+            </span>
+            <span className="sm:hidden">
+              Bengaluru, India • B2B Spice Exports
+            </span>
           </div>
 
-          {/* Mobile Hamburger Button with comfortable 44px+ touch target */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-[#141210] hover:bg-[#FBF8F3] active:bg-[#F2EAE0] transition-colors relative z-50 flex items-center justify-center min-w-[44px] min-h-[44px]"
-            aria-label="Toggle Navigation Menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6 text-[#0B3B2E]" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-4 flex-shrink-0 tabular-nums">
+            <span className="hidden md:inline text-slate-300">
+              Incoterms: <span className="text-white font-medium">FOB • CIF • EXW</span>
+            </span>
+            <span className="hidden md:inline text-white/20">|</span>
+            <a
+              href={`tel:${COMPANY_INFO.contact.phoneRaw}`}
+              className="text-slate-200 hover:text-[#C59238] transition-colors font-medium"
+            >
+              <span className="hidden sm:inline">Direct Trade Desk: </span>
+              <span className="text-white font-semibold">{COMPANY_INFO.contact.phoneFormatted}</span>
+            </a>
+          </div>
         </div>
-      </header>
+      </div>
 
-      {/* Mobile Full-Screen Luxury Editorial Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[75] bg-white/98 backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 sm:px-10 lg:hidden"
-            style={{
-              paddingTop: 'calc(5.5rem + env(safe-area-inset-top, 0px))',
-              paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))',
-            }}
-          >
-            <div className="flex flex-col gap-6">
-              <span className="font-sans text-[11px] font-semibold tracking-[0.25em] text-[#C97E12] uppercase">
-                B2B Export Navigation
-              </span>
-              <div className="flex flex-col gap-5">
-                {NAV_LINKS.map((link, idx) => {
-                  const isActive = pathname === link.href;
-                  return (
-                    <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.04 }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`font-serif text-3xl sm:text-4xl transition-colors block py-1 ${
-                          isActive ? 'text-[#0B3B2E] font-medium' : 'text-[#141210] active:text-[#0B3B2E]'
-                        }`}
-                      >
-                        {link.name}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
+      {/* Main Sticky Executive Navigation Header */}
+      <header className="bg-white/95 backdrop-blur-md border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-[72px] gap-4">
+            {/* Left: Corporate Logo */}
+            <Link href="/" className="flex-shrink-0 focus:outline-none">
+              <Logo size="md" />
+            </Link>
 
-            {/* Mobile Drawer Bottom Trade Actions */}
-            <div className="flex flex-col gap-3.5 pt-8 mt-6 border-t border-[#141210]/10">
-              <div className="flex items-center justify-between font-sans text-xs text-[#554D45]">
-                <span className="uppercase tracking-wider font-medium">BENGALURU EXPORT DESK</span>
-                <span className="text-[#141210] font-semibold tabular-nums">{COMPANY_INFO.contact.phoneFormatted}</span>
-              </div>
+            {/* Center: Desktop Navigation Links */}
+            <nav aria-label="Primary Navigation" className="hidden lg:flex items-center gap-8 h-full">
+              {NAV_LINKS.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`relative h-full inline-flex items-center text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'text-[#0B1F3A] font-semibold'
+                        : 'text-[#334155] hover:text-[#0B1F3A]'
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#0B1F3A]" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
 
-              {/* Direct Tap Actions */}
-              <div className="grid grid-cols-2 gap-2.5 pt-1">
-                <a
-                  href={`tel:${COMPANY_INFO.contact.phoneRaw}`}
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#FBF8F3] border border-[#141210]/12 text-[#141210] font-sans text-xs font-semibold active:bg-[#F2EAE0]"
-                >
-                  <Phone className="w-3.5 h-3.5 text-[#0B3B2E]" />
-                  <span>Call Desk</span>
-                </a>
-
-                <a
-                  href={COMPANY_INFO.contact.whatsAppUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-full bg-[#25D366]/15 border border-[#25D366]/30 text-[#141210] font-sans text-xs font-semibold active:bg-[#25D366]/25"
-                >
-                  <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366]" />
-                  <span>WhatsApp</span>
-                </a>
-              </div>
+            {/* Right: Clickable Phone + Primary Navy CTA */}
+            <div className="hidden lg:flex items-center gap-5 flex-shrink-0">
+              <a
+                href={`tel:${COMPANY_INFO.contact.phoneRaw}`}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#0B1F3A] hover:text-[#143159] transition-colors tabular-nums"
+              >
+                <Phone className="w-4 h-4 text-[#C59238]" />
+                <span>{COMPANY_INFO.contact.phoneFormatted}</span>
+              </a>
 
               <Link
                 href="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3.5 text-center rounded-full text-xs font-sans uppercase tracking-wider text-white font-semibold bg-[#0B3B2E] active:bg-[#C97E12] transition-colors shadow-sm mt-1"
+                className="inline-flex items-center justify-center bg-[#0B1F3A] hover:bg-[#143159] text-white px-5 py-2.5 rounded-md font-semibold text-sm transition-colors shadow-sm"
               >
                 Request Bulk Quote
               </Link>
             </div>
-          </motion.div>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-expanded={mobileMenuOpen}
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-md border border-slate-200 text-[#0B1F3A] hover:bg-slate-50 transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Slide-Down Corporate Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-slate-200 shadow-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-5">
+              <nav aria-label="Mobile Navigation" className="flex flex-col divide-y divide-slate-100">
+                {NAV_LINKS.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between py-3.5 text-base font-medium ${
+                        isActive
+                          ? 'text-[#0B1F3A] font-semibold'
+                          : 'text-[#334155]'
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      <ArrowRight
+                        className={`w-4 h-4 ${
+                          isActive ? 'text-[#C59238]' : 'text-slate-400'
+                        }`}
+                      />
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="pt-2 border-t border-slate-200 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <a
+                    href={`tel:${COMPANY_INFO.contact.phoneRaw}`}
+                    className="flex items-center justify-center gap-2.5 w-full py-3 px-4 rounded-md border border-slate-300 bg-[#F4F7FA] text-[#0B1F3A] font-semibold text-sm tabular-nums"
+                  >
+                    <Phone className="w-4 h-4 text-[#C59238]" />
+                    <span>Call: {COMPANY_INFO.contact.phoneFormatted}</span>
+                  </a>
+
+                  <a
+                    href={COMPANY_INFO.contact.whatsAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2.5 w-full py-3 px-4 rounded-md bg-[#15803D] hover:bg-[#166534] text-white font-semibold text-sm transition-colors"
+                  >
+                    <WhatsAppIcon className="w-4 h-4 fill-white" />
+                    <span>WhatsApp Trade Desk</span>
+                  </a>
+                </div>
+
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center w-full py-3.5 px-5 rounded-md bg-[#0B1F3A] hover:bg-[#143159] text-white font-semibold text-sm transition-colors"
+                >
+                  Request Bulk Quote
+                </Link>
+              </div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </>
+      </header>
+    </div>
   );
 }
